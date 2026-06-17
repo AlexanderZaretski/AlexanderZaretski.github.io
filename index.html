@@ -223,56 +223,6 @@
           <button class="btn-demo" data-modal="modal-market">Open interactive demo<span class="arr">&#x2192;</span></button>
         </article>
 
-        <!-- DEMO 6: Reconciliation -->
-        <article class="card">
-          <div class="card-top">
-            <span class="card-tile">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-            </span>
-            <span class="card-flag card-flag-alt">Demo</span>
-          </div>
-          <h3 class="card-title">Finance vs Trading - Data Reconciliation</h3>
-          <p class="card-summary">Reconciliation pipeline that finds why two departments report different numbers for the same thing.</p>
-          <dl class="case-rows">
-            <div class="case-row">
-              <dt>Problem</dt>
-              <dd>Finance and Trading reported different fee totals for the same period. Nobody knew which number was right.</dd>
-            </div>
-            <div class="case-row">
-              <dt>What I built</dt>
-              <dd>A side-by-side comparison pipeline that traced the gap to its root cause - a stock split handled differently in one system.</dd>
-            </div>
-          </dl>
-          <p class="case-result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>The gap was found, explained, and fixed - trust in the data restored.</p>
-          <p class="card-stack">SQL &middot; Python &middot; Tableau</p>
-          <button class="btn-demo" data-modal="modal-trader">Open interactive demo<span class="arr">&#x2192;</span></button>
-        </article>
-
-        <!-- DEMO 7: Commodity Tracker -->
-        <article class="card">
-          <div class="card-top">
-            <span class="card-tile">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-            </span>
-            <span class="card-flag card-flag-alt">Public data</span>
-          </div>
-          <h3 class="card-title">Commodity Tracker &amp; Report Bot</h3>
-          <p class="card-summary">Scheduled data pipeline that tracks energy prices and generates its own daily report.</p>
-          <dl class="case-rows">
-            <div class="case-row">
-              <dt>Problem</dt>
-              <dd>Recurring price reports take analyst time every single day, and the work is always the same.</dd>
-            </div>
-            <div class="case-row">
-              <dt>What I built</dt>
-              <dd>An automated pipeline that pulls prices, calculates rolling metrics, and generates a clean report on schedule - based on commission automation I built at eToro.</dd>
-            </div>
-          </dl>
-          <p class="case-result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A daily report that builds itself.</p>
-          <p class="card-stack">Python &middot; EIA API &middot; Automation</p>
-          <button class="btn-demo" data-modal="modal-commodity">Open interactive demo<span class="arr">&#x2192;</span></button>
-        </article>
-
       </div>
     </div>
   </section>
@@ -759,80 +709,7 @@ Action: cut hedge &amp; review config before 9:30 ET.</pre>
     </div>
   </div>
 
-  <!-- MODAL: Finance & Trading Reconciliation -->
-  <div class="db-modal" id="modal-trader">
-    <div class="db-backdrop" data-close="modal-trader"></div>
-    <div class="db-panel">
-      <div class="db-header">
-        <div>
-          <span class="db-badge">Cross-department analytics</span>
-          <h2 class="db-title">Finance vs Trading - Fee Reconciliation</h2>
-          <p class="db-sub">Why do two departments report different numbers for the same fees?</p>
-          <p class="db-note">Interactive demo with sample data.</p>
-        </div>
-        <button class="db-close" data-close="modal-trader">&#x2715;</button>
-      </div>
-      <div class="db-kpis db-kpis-5">
-        <div class="db-kpi"><div class="kpi-num">5</div><div class="kpi-lab">Stocks compared</div></div>
-        <div class="db-kpi"><div class="kpi-num neg">1</div><div class="kpi-lab">Mismatch found</div></div>
-        <div class="db-kpi"><div class="kpi-num pos">80%</div><div class="kpi-lab">Match rate</div></div>
-        <div class="db-kpi"><div class="kpi-num">$500</div><div class="kpi-lab">Total fees &middot; Finance</div></div>
-        <div class="db-kpi"><div class="kpi-num warn">$580</div><div class="kpi-lab">Total fees &middot; Trading</div></div>
-      </div>
-      <div class="db-grid">
-        <div class="db-box span-2">
-          <p class="db-box-title">Fees by stock and department</p>
-          <canvas id="ch-trader-hours"></canvas>
-        </div>
-        <div class="db-box">
-          <p class="db-box-title">Comparison details</p>
-          <div style="flex:1;overflow-y:auto;">
-            <table class="recon-table">
-              <thead>
-                <tr><th>Stock</th><th>Finance ($)</th><th>Trading ($)</th><th>Diff</th><th>Status</th></tr>
-              </thead>
-              <tbody>
-                <tr><td>AAPL</td><td>100</td><td>100</td><td>0</td><td style="color:#34D399">&#10003; Match</td></tr>
-                <tr><td>MSFT</td><td>120</td><td>120</td><td>0</td><td style="color:#34D399">&#10003; Match</td></tr>
-                <tr><td>TSLA</td><td>90</td><td>90</td><td>0</td><td style="color:#34D399">&#10003; Match</td></tr>
-                <tr><td>AMZN</td><td>110</td><td>110</td><td>0</td><td style="color:#34D399">&#10003; Match</td></tr>
-                <tr class="mismatch"><td>NVDA</td><td>80</td><td>160</td><td>+80</td><td>&#9888; Mismatch</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div class="db-box">
-          <p class="db-box-title">Investigation</p>
-          <div class="invest-cards">
-            <div class="invest-card">
-              <span class="invest-icon">&#128269;</span>
-              <div>
-                <div class="invest-label">Mismatch found on</div>
-                <div class="invest-val"><strong>NVDA</strong></div>
-              </div>
-            </div>
-            <div class="invest-card">
-              <span class="invest-icon">&#128161;</span>
-              <div>
-                <div class="invest-label">Root cause</div>
-                <div class="invest-val">Trading used the pre-split NVDA price, which doubled the calculated fees.</div>
-              </div>
-            </div>
-            <div class="invest-card">
-              <span class="invest-icon">&#10003;</span>
-              <div>
-                <div class="invest-label">Action taken</div>
-                <div class="invest-val">Price data updated to post-split values. Both departments now match.</div>
-              </div>
-            </div>
-            <div class="invest-resolved">&#10003; Issue resolved - numbers aligned</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: Market Briefing -->
+  <!-- MODAL: SaaS Revenue Analysis -->
   <div class="db-modal" id="modal-market">
     <div class="db-backdrop" data-close="modal-market"></div>
     <div class="db-panel">
@@ -861,42 +738,6 @@ Action: cut hedge &amp; review config before 9:30 ET.</pre>
           <p class="db-box-title">Churn &amp; conversion rate &middot; monthly</p>
           <p class="db-formula">Churn = customers lost &divide; start &nbsp;&middot;&nbsp; Conversion = new paid &divide; trials</p>
           <canvas id="ch-saas-cc"></canvas>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: Commodity Tracker -->
-  <div class="db-modal" id="modal-commodity">
-    <div class="db-backdrop" data-close="modal-commodity"></div>
-    <div class="db-panel">
-      <div class="db-header">
-        <div>
-          <span class="db-badge">Scheduled pipeline</span>
-          <h2 class="db-title">Commodity Tracker &amp; Report Bot</h2>
-          <p class="db-sub">Natural Gas &amp; WTI Oil &middot; 30-day rolling window &middot; auto-generated report</p>
-          <p class="db-note">Interactive demo with sample data based on public sources.</p>
-        </div>
-        <button class="db-close" data-close="modal-commodity">&#x2715;</button>
-      </div>
-      <div class="db-kpis">
-        <div class="db-kpi"><div class="kpi-num neg">$2.72</div><div class="kpi-lab">NatGas $/MMBtu</div></div>
-        <div class="db-kpi"><div class="kpi-num pos">$78.43</div><div class="kpi-lab">WTI Oil $/bbl</div></div>
-        <div class="db-kpi"><div class="kpi-num neg">&minus;4.2%</div><div class="kpi-lab">NatGas 30d change</div></div>
-        <div class="db-kpi"><div class="kpi-num pos">+0.4%</div><div class="kpi-lab">Oil 30d change</div></div>
-      </div>
-      <div class="db-grid">
-        <div class="db-box">
-          <p class="db-box-title">Natural Gas - 30 days ($/MMBtu)</p>
-          <canvas id="ch-natgas"></canvas>
-        </div>
-        <div class="db-box">
-          <p class="db-box-title">WTI Oil - 30 days ($/bbl)</p>
-          <canvas id="ch-oil"></canvas>
-        </div>
-        <div class="db-box span-2">
-          <p class="db-box-title">Week-over-week price change (%)</p>
-          <canvas id="ch-commodity-wow"></canvas>
         </div>
       </div>
     </div>

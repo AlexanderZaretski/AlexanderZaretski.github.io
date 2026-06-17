@@ -122,9 +122,7 @@ function close(id) {
 }
 
 function render(id) {
-  if (id === 'modal-trader')    renderTrader();
   if (id === 'modal-market')    renderMarket();
-  if (id === 'modal-commodity') renderCommodity();
   if (id === 'modal-ai')        renderAI();
   if (id === 'modal-sltp')      renderSLTP();
   if (id === 'modal-hedge')     renderHedge();
@@ -350,128 +348,6 @@ function renderPnl() {
   });
 }
 
-// ── Dashboard 1: Finance & Trading Reconciliation ─────────────────────────────
-function renderTrader() {
-  const stocks   = ['AAPL', 'MSFT', 'TSLA', 'AMZN', 'NVDA'];
-  const nvdaIdx  = 4;
-  const finFees  = [100, 120, 90, 110, 80];
-  const tradFees = [100, 120, 90, 110, 160];
-
-  // Custom plugin: value labels + diff badges + dashed red border on NVDA
-  const reconPlugin = {
-    id: 'reconPlugin',
-    afterDraw(chart) {
-      const { ctx, scales: { y } } = chart;
-      const meta0 = chart.getDatasetMeta(0);
-      const meta1 = chart.getDatasetMeta(1);
-      const baseY = y.getPixelForValue(0);
-
-      function rrect(x, y, w, h, r) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        ctx.lineTo(x + r, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-        ctx.closePath();
-      }
-
-      // Value labels above each bar
-      [{ meta: meta0, data: finFees }, { meta: meta1, data: tradFees }].forEach(({ meta, data }) => {
-        meta.data.forEach((bar, i) => {
-          ctx.save();
-          ctx.fillStyle = '#E2E8F0';
-          ctx.font = 'bold 11px Inter, sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(data[i], bar.x, bar.y - 5);
-          ctx.restore();
-        });
-      });
-
-      // Difference badge centred above each group
-      for (let i = 0; i < stocks.length; i++) {
-        const b0   = meta0.data[i];
-        const b1   = meta1.data[i];
-        const xC   = (b0.x + b1.x) / 2;
-        const topY = Math.min(b0.y, b1.y) - 28;
-        const diff  = tradFees[i] - finFees[i];
-        const isOk  = diff === 0;
-        const label = isOk ? '0' : '+' + diff;
-        const bw = isOk ? 22 : 34;
-        const bh = 15;
-        ctx.save();
-        ctx.fillStyle = isOk ? 'rgba(52,211,153,.2)' : 'rgba(248,113,113,.28)';
-        rrect(xC - bw / 2, topY - bh, bw, bh, 3);
-        ctx.fill();
-        ctx.fillStyle = isOk ? '#34D399' : '#F87171';
-        ctx.font = 'bold 10px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(label, xC, topY - 3);
-        ctx.restore();
-      }
-
-      // Red dashed border around NVDA pair
-      const nb0 = meta0.data[nvdaIdx];
-      const nb1 = meta1.data[nvdaIdx];
-      const pad = 10;
-      const rl  = Math.min(nb0.x - nb0.width / 2, nb1.x - nb1.width / 2) - pad;
-      const rr  = Math.max(nb0.x + nb0.width / 2, nb1.x + nb1.width / 2) + pad;
-      const rt  = Math.min(nb0.y, nb1.y) - 52;
-      const rb  = baseY + 4;
-      ctx.save();
-      ctx.strokeStyle = '#F87171';
-      ctx.lineWidth   = 1.5;
-      ctx.setLineDash([5, 3]);
-      ctx.strokeRect(rl, rt, rr - rl, rb - rt);
-      ctx.restore();
-    }
-  };
-
-  mk('ch-trader-hours', {
-    type: 'bar',
-    data: {
-      labels: stocks,
-      datasets: [
-        {
-          label: 'Finance Fees',
-          data: finFees,
-          backgroundColor: finFees.map((_, i) => i === nvdaIdx ? 'rgba(248,113,113,.75)' : '#8B7CF0'),
-          borderRadius: 4, borderSkipped: false
-        },
-        {
-          label: 'Trading Fees',
-          data: tradFees,
-          backgroundColor: tradFees.map((_, i) => i === nvdaIdx ? 'rgba(248,113,113,.4)' : '#F59E0B'),
-          borderRadius: 4, borderSkipped: false
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      layout: { padding: { top: 55 } },
-      plugins: {
-        legend: { labels: { color: C.light, font: { family: C.font }, boxWidth: 14 } },
-        tooltip: { ...tooltip, callbacks: { label: ctx => ` ${ctx.dataset.label}: $${ctx.parsed.y}` } }
-      },
-      scales: {
-        x: {
-          grid: { color: C.grid },
-          ticks: {
-            color: ctx => ctx.index === nvdaIdx ? '#F87171' : C.slate,
-            font: ctx => ({ family: C.font, size: 11, weight: ctx.index === nvdaIdx ? '700' : '400' })
-          }
-        },
-        y: { grid: { color: C.grid }, min: 0, max: 200, ticks: { color: C.slate, callback: v => '$' + v } }
-      }
-    },
-    plugins: [reconPlugin]
-  });
-}
-
 // ── Dashboard 2: Market Briefing ───────────────────────────────────────────────
 function renderMarket() {
   // ── SaaS Revenue Analysis ──
@@ -537,77 +413,6 @@ function renderMarket() {
         x:  { grid: { color: C.grid }, ticks: { color: C.slate, font: { size: 11 } } },
         y:  { position: 'left',  grid: { color: C.grid }, ticks: { color: C.red, callback: v => v + '%' }, title: { display: true, text: 'Churn', color: C.red, font: { size: 10 } }, suggestedMin: 0, suggestedMax: 2 },
         y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: C.green, callback: v => v + '%' }, title: { display: true, text: 'Conversion', color: C.green, font: { size: 10 } }, suggestedMin: 0, suggestedMax: 15 }
-      }
-    }
-  });
-}
-
-// ── Dashboard 3: Commodity ─────────────────────────────────────────────────────
-function renderCommodity() {
-  const days = Array.from({ length: 30 }, (_, i) => {
-    const d = new Date('2024-09-01');
-    d.setDate(d.getDate() + i);
-    return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  });
-
-  const natGas = [2.84,2.79,2.83,2.91,2.88,2.95,3.02,2.97,2.89,2.84,2.78,2.73,2.76,2.82,2.88,2.93,2.98,2.94,2.87,2.81,2.75,2.79,2.84,2.88,2.91,2.86,2.82,2.78,2.75,2.72];
-  const wti    = [78.42,77.89,78.12,79.34,80.12,79.87,80.45,81.23,80.89,79.45,78.23,77.89,78.45,79.12,79.89,80.23,79.78,78.45,77.92,78.34,79.12,79.56,78.89,77.45,76.89,77.23,78.12,79.34,78.89,78.43];
-
-  const lineOpts = (color, label) => ({
-    type: 'line',
-    data: {
-      labels: days,
-      datasets: [{
-        label,
-        data: color === C.blue ? natGas : wti,
-        borderColor: color,
-        backgroundColor: color === C.blue ? 'rgba(77,227,240,.08)' : 'rgba(251,191,36,.08)',
-        fill: true, tension: 0.4,
-        pointRadius: 0, pointHoverRadius: 4
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip },
-      scales: {
-        x: { grid: { color: C.grid }, ticks: { color: C.slate, maxTicksLimit: 6 } },
-        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => '$' + v } }
-      }
-    }
-  });
-
-  mk('ch-natgas', lineOpts(C.blue,   'NatGas $/MMBtu'));
-  mk('ch-oil',    lineOpts(C.yellow, 'WTI $/bbl'));
-
-  // Grouped bar: week-over-week change
-  const weeks  = ['Week 1', 'Week 2', 'Week 3', 'Week 4'];
-  const gasWow = [1.2, -2.1, 0.8, -3.1];
-  const oilWow = [-0.8, 1.4, -0.3, -0.9];
-  mk('ch-commodity-wow', {
-    type: 'bar',
-    data: {
-      labels: weeks,
-      datasets: [
-        {
-          label: 'Natural Gas',
-          data: gasWow,
-          backgroundColor: gasWow.map(v => v >= 0 ? 'rgba(77,227,240,.8)' : 'rgba(77,227,240,.3)'),
-          borderRadius: 4, borderSkipped: false
-        },
-        {
-          label: 'WTI Oil',
-          data: oilWow,
-          backgroundColor: oilWow.map(v => v >= 0 ? 'rgba(251,191,36,.8)' : 'rgba(251,191,36,.3)'),
-          borderRadius: 4, borderSkipped: false
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: C.light, font: { family: C.font } } }, tooltip },
-      scales: {
-        x: { grid: { color: C.grid }, ticks: { color: C.slate } },
-        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => v + '%' } }
       }
     }
   });
