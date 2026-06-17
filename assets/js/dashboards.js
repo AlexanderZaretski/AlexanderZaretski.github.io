@@ -131,60 +131,72 @@ function render(id) {
   if (id === 'modal-pnl')       renderPnl();
 }
 
-// ── Flagship 1: Pre-Market SLTP Monitoring ─────────────────────────────────────
+// ── Flagship 1: Pre-Market Order Monitoring ────────────────────────────────────
 function renderSLTP() {
-  const hours   = ['4am', '5am', '6am', '7am', '8am', '8:30', '9am', '9:25'];
-  const volume  = [320, 410, 690, 980, 1450, 1720, 2150, 2480];
-  const flagged = [2, 3, 5, 9, 14, 11, 7, 4];
-
-  mk('ch-sltp-flow', {
+  // Hedge-book P&L by stock at open ($K), sorted most-negative first.
+  const hedge = [
+    ['GME', -520], ['TSLA', -485], ['BA', -420], ['META', -360], ['NVDA', -310],
+    ['COIN', -240], ['PLTR', -205], ['MRNA', -190], ['AMD', -140], ['XOM', -95],
+    ['AAPL', -25], ['DIS', -15], ['JPM', -10], ['NFLX', 35], ['INTC', 85]
+  ];
+  mk('ch-sltp-hedge', {
     type: 'bar',
     data: {
-      labels: hours,
-      datasets: [
-        {
-          type: 'line',
-          label: 'Orders scanned',
-          data: volume,
-          borderColor: C.accent,
-          backgroundColor: 'rgba(139,124,240,.10)',
-          fill: true, tension: 0.4,
-          pointRadius: 3, pointBackgroundColor: C.accent,
-          yAxisID: 'y'
-        },
-        {
-          type: 'bar',
-          label: 'Flagged',
-          data: flagged,
-          backgroundColor: 'rgba(251,191,36,.75)',
-          borderRadius: 4, borderSkipped: false,
-          yAxisID: 'y1',
-          barPercentage: 0.45
-        }
-      ]
+      labels: hedge.map(h => h[0]),
+      datasets: [{
+        label: 'Hedge P&L ($K)',
+        data: hedge.map(h => h[1]),
+        backgroundColor: hedge.map(h => h[1] < 0 ? 'rgba(248,113,113,.75)' : 'rgba(52,211,153,.75)'),
+        borderColor: hedge.map(h => h[1] < 0 ? C.red : C.green),
+        borderWidth: 1, borderRadius: 3, borderSkipped: false
+      }]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: C.light, font: { family: C.font }, boxWidth: 14 } }, tooltip },
+      plugins: { legend: { display: false }, tooltip },
       scales: {
-        x:  { grid: { color: C.grid }, ticks: { color: C.slate, font: { family: C.font, size: 11 } } },
-        y:  { position: 'left', grid: { color: C.grid }, ticks: { color: C.slate }, title: { display: true, text: 'Orders', color: C.slate, font: { size: 10 } } },
-        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: '#FBBF24' }, title: { display: true, text: 'Flagged', color: '#FBBF24', font: { size: 10 } } }
+        x: { grid: { color: C.grid }, ticks: { color: C.light, font: { family: C.mono, size: 10 } } },
+        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => '$' + v + 'K' } }
       }
     }
   });
 
-  const instr = ['TSLA', 'NVDA', 'BTC/USD', 'AAPL', 'SPX500'];
-  const flags = [11, 9, 7, 6, 5];
-  mk('ch-sltp-instr', {
+  // Stop-loss vs take-profit orders firing at open, for the biggest movers.
+  const tickers = ['TSLA', 'META', 'BA', 'PLTR', 'NVDA', 'AMD', 'GME'];
+  const sl = [1240, 880, 720, 540, 70, 65, 15];
+  const tp = [75, 90, 60, 60, 985, 540, 690];
+  mk('ch-sltp-triggers', {
     type: 'bar',
     data: {
-      labels: instr,
+      labels: tickers,
+      datasets: [
+        { label: 'Stop-loss', data: sl, backgroundColor: 'rgba(248,113,113,.8)', borderRadius: 3, borderSkipped: false },
+        { label: 'Take-profit', data: tp, backgroundColor: 'rgba(52,211,153,.8)', borderRadius: 3, borderSkipped: false }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      indexAxis: 'y',
+      plugins: { legend: { labels: { color: C.light, font: { family: C.font }, boxWidth: 12 } }, tooltip },
+      scales: {
+        x: { grid: { color: C.grid }, ticks: { color: C.slate } },
+        y: { grid: { display: false }, ticks: { color: C.light, font: { family: C.mono, size: 11 } } }
+      }
+    }
+  });
+
+  // Pre-order queue load: orders queued vs system capacity (%). Red = over capacity.
+  const loadLabels = ['GME', 'AMC', 'PLTR', 'COIN', 'MRNA', 'NVDA'];
+  const util = [142, 137, 105, 85, 76, 71];
+  mk('ch-sltp-load', {
+    type: 'bar',
+    data: {
+      labels: loadLabels,
       datasets: [{
-        label: 'Flagged orders',
-        data: flags,
-        backgroundColor: 'rgba(139,124,240,.7)',
-        borderRadius: 5, borderSkipped: false
+        label: 'Queue load %',
+        data: util,
+        backgroundColor: util.map(v => v > 100 ? 'rgba(248,113,113,.8)' : v >= 70 ? 'rgba(251,191,36,.8)' : 'rgba(52,211,153,.8)'),
+        borderRadius: 3, borderSkipped: false
       }]
     },
     options: {
@@ -192,7 +204,7 @@ function renderSLTP() {
       indexAxis: 'y',
       plugins: { legend: { display: false }, tooltip },
       scales: {
-        x: { grid: { color: C.grid }, ticks: { color: C.slate, stepSize: 2 } },
+        x: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => v + '%' }, suggestedMax: 160 },
         y: { grid: { display: false }, ticks: { color: C.light, font: { family: C.mono, size: 11 } } }
       }
     }

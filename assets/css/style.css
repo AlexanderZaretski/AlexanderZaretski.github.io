@@ -849,6 +849,46 @@ a:focus-visible, button:focus-visible {
 .recon-table td.pos { color: var(--green); }
 .recon-table td.neg { color: var(--red); }
 .recon-table tr.mismatch td { background: rgba(248,113,113,.08); color: var(--red); font-weight: 600; }
+.recon-table td.amb { color: var(--amber); }
+
+/* ── Pre-market modal: AI brief + Google Chat alert preview ─────────────────── */
+.ai-brief {
+  background: linear-gradient(180deg, var(--accent-bg), transparent 70%), var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-2);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.3rem;
+}
+.ai-brief-head { display: flex; align-items: center; gap: .7rem; margin-bottom: .6rem; flex-wrap: wrap; }
+.ai-brief-badge {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-family: var(--font-mono); font-size: .64rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent-2); border: 1px solid rgba(107,92,214,.4); background: var(--accent-bg);
+  padding: .2rem .6rem;
+}
+.ai-brief-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-2); }
+.ai-brief-ts { font-family: var(--font-mono); font-size: .68rem; color: var(--faint); }
+.ai-brief-lead { font-size: .95rem; color: var(--text); margin-bottom: .5rem; line-height: 1.6; }
+.ai-brief-lead strong { color: var(--accent-2); }
+.ai-brief-text { font-size: .84rem; color: var(--muted); line-height: 1.7; margin: 0; }
+
+.gchat-card {
+  border: 1px solid var(--border); border-top: 3px solid var(--red);
+  background: var(--bg-alt); flex: 1; overflow-y: auto;
+}
+.gchat-head {
+  display: flex; align-items: center; gap: .55rem; padding: .6rem .7rem .35rem;
+  font-family: var(--font-mono); font-size: .72rem; color: var(--muted);
+}
+.gchat-logo {
+  width: 22px; height: 22px; background: #00897B; color: #fff; font-weight: 700;
+  font-size: .75rem; display: grid; place-items: center; flex-shrink: 0;
+}
+.gchat-msg {
+  margin: 0; padding: .2rem .75rem .8rem; font-family: var(--font-mono);
+  font-size: .72rem; line-height: 1.7; color: var(--muted); white-space: pre-wrap;
+}
+.gchat-msg .gc-title { color: var(--red); font-weight: 600; }
 .invest-cards { flex: 1; display: flex; flex-direction: column; gap: .55rem; overflow-y: auto; }
 .invest-card { display: flex; gap: .65rem; align-items: flex-start; padding: .55rem .65rem; background: rgba(0,0,0,.45); border: 1px solid var(--border); }
 .invest-icon { font-size: .95rem; flex-shrink: 0; line-height: 1.5; }
