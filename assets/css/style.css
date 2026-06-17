@@ -894,21 +894,11 @@ a:focus-visible, button:focus-visible {
 }
 .gchat-msg .gc-title { color: var(--red); font-weight: 600; }
 
-/* ── SaaS modal: formula annotations + acquisition funnel ───────────────────── */
+/* ── SaaS modal: metric-definition annotation under a chart title ───────────── */
 .db-formula {
   font-family: var(--font-mono); font-size: .66rem; color: var(--accent-2);
   margin: -.45rem 0 .7rem; letter-spacing: .01em; opacity: .92;
 }
-.funnel { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: .2rem; }
-.funnel-row { display: flex; justify-content: center; }
-.funnel-bar {
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  background: linear-gradient(90deg, var(--accent), var(--accent-2));
-  color: #fff; padding: .5rem .9rem; min-width: 0;
-}
-.fn-label { font-size: .8rem; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.fn-val { font-family: var(--font-mono); font-weight: 700; font-size: .85rem; flex-shrink: 0; }
-.funnel-conv { text-align: center; font-family: var(--font-mono); font-size: .68rem; color: var(--faint); }
 .invest-cards { flex: 1; display: flex; flex-direction: column; gap: .55rem; overflow-y: auto; }
 .invest-card { display: flex; gap: .65rem; align-items: flex-start; padding: .55rem .65rem; background: rgba(0,0,0,.45); border: 1px solid var(--border); }
 .invest-icon { font-size: .95rem; flex-shrink: 0; line-height: 1.5; }

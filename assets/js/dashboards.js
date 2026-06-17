@@ -474,74 +474,69 @@ function renderTrader() {
 
 // ── Dashboard 2: Market Briefing ───────────────────────────────────────────────
 function renderMarket() {
-  // ── SaaS Revenue & Retention Analysis ──
-  // ARR movement bridge ($M), drawn as floating ("waterfall") bars:
-  // Start 17.8 + New 5.0 + Expansion 3.4 − Contraction 0.9 − Churn 1.3 = End 24.0
-  const bridgeLabels = ['Start', 'New', 'Expansion', 'Contraction', 'Churn', 'End'];
-  const bridgeData   = [[0, 17.8], [17.8, 22.8], [22.8, 26.2], [25.3, 26.2], [24.0, 25.3], [0, 24.0]];
-  const bridgeDeltas = ['$17.8M', '+$5.0M', '+$3.4M', '−$0.9M', '−$1.3M', '$24.0M'];
-  const bridgeColors = [
-    'rgba(139,124,240,.85)', 'rgba(52,211,153,.8)', 'rgba(52,211,153,.8)',
-    'rgba(248,113,113,.8)', 'rgba(248,113,113,.8)', 'rgba(139,124,240,.85)'
-  ];
-  mk('ch-saas-bridge', {
-    type: 'bar',
-    data: { labels: bridgeLabels, datasets: [{ data: bridgeData, backgroundColor: bridgeColors, borderRadius: 3, borderSkipped: false }] },
+  // ── SaaS Revenue Analysis ──
+  const months = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+
+  // MRR growth over 12 months (ARR = MRR × 12). Smooth gradient area chart.
+  const mrr = [1.48, 1.52, 1.56, 1.61, 1.66, 1.71, 1.76, 1.81, 1.86, 1.91, 1.96, 2.00];
+  mk('ch-saas-mrr', {
+    type: 'line',
+    data: {
+      labels: months,
+      datasets: [{
+        label: 'MRR ($M)',
+        data: mrr,
+        borderColor: C.accent,
+        borderWidth: 2.5,
+        tension: 0.4,
+        fill: true,
+        pointRadius: mrr.map((_, i) => i === mrr.length - 1 ? 4 : 0),
+        pointBackgroundColor: C.accent,
+        backgroundColor: (ctx) => {
+          const { chart } = ctx;
+          const { ctx: c, chartArea } = chart;
+          if (!chartArea) return 'rgba(139,124,240,.25)';
+          const g = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          g.addColorStop(0, 'rgba(139,124,240,.45)');
+          g.addColorStop(1, 'rgba(139,124,240,0)');
+          return g;
+        }
+      }]
+    },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
         legend: { display: false },
-        tooltip: Object.assign({}, tooltip, { callbacks: { label: c => bridgeDeltas[c.dataIndex] } })
+        tooltip: Object.assign({}, tooltip, { callbacks: {
+          label: c => 'MRR $' + c.parsed.y.toFixed(2) + 'M   ·   ARR $' + (c.parsed.y * 12).toFixed(1) + 'M'
+        } })
       },
       scales: {
-        x: { grid: { color: C.grid }, ticks: { color: C.light, font: { family: C.font, size: 11 } } },
-        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => '$' + v + 'M' }, beginAtZero: true }
+        x: { grid: { color: C.grid }, ticks: { color: C.slate, font: { family: C.font, size: 11 } } },
+        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => '$' + v.toFixed(1) + 'M' } }
       }
     }
   });
 
-  // Cohort revenue retention — gross (losses only) vs net (with expansion), by month.
-  const rMonths = ['0', '2', '4', '6', '8', '10', '12'];
-  const net   = [100, 101, 102.5, 104, 105, 106, 107];
-  const gross = [100, 97.5, 95, 93, 91, 89.5, 88];
-  mk('ch-saas-retention', {
+  // Churn (left axis) vs trial→paid conversion (right axis), monthly %.
+  const churn = [1.3, 1.2, 1.2, 1.1, 1.1, 1.1, 1.0, 1.1, 1.0, 1.0, 1.0, 1.0];
+  const conv  = [9.0, 9.5, 9.8, 10.2, 10.5, 10.8, 11.0, 11.3, 11.5, 11.7, 11.9, 12.0];
+  mk('ch-saas-cc', {
     type: 'line',
     data: {
-      labels: rMonths,
+      labels: months,
       datasets: [
-        { label: 'Net (NRR)',  data: net,   borderColor: C.green,  backgroundColor: 'rgba(52,211,153,.10)', fill: true,  tension: .35, pointRadius: 2 },
-        { label: 'Gross (GRR)', data: gross, borderColor: C.accent, backgroundColor: 'rgba(139,124,240,.06)', fill: false, tension: .35, pointRadius: 2 }
+        { label: 'Monthly churn',          data: churn, borderColor: C.red,   backgroundColor: 'rgba(248,113,113,.08)', fill: true, tension: .35, pointRadius: 0, yAxisID: 'y' },
+        { label: 'Trial → paid conversion', data: conv,  borderColor: C.green, backgroundColor: 'rgba(52,211,153,.08)',  fill: true, tension: .35, pointRadius: 0, yAxisID: 'y1' }
       ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { labels: { color: C.light, font: { family: C.font }, boxWidth: 12 } }, tooltip },
       scales: {
-        x: { grid: { color: C.grid }, ticks: { color: C.slate }, title: { display: true, text: 'Months since cohort start', color: C.slate, font: { size: 10 } } },
-        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => v + '%' } }
-      }
-    }
-  });
-
-  // Monthly churn — logo (customer) vs revenue (dollar) churn %.
-  const cMonths    = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-  const logoChurn  = [1.2, 1.0, 1.1, 1.3, 0.9, 1.1, 1.2, 1.0, 1.1, 1.2, 1.0, 1.1];
-  const revChurn   = [1.0, 0.8, 0.9, 1.1, 0.7, 0.9, 1.0, 0.8, 0.9, 1.0, 0.8, 0.9];
-  mk('ch-saas-churn', {
-    type: 'line',
-    data: {
-      labels: cMonths,
-      datasets: [
-        { label: 'Logo churn',    data: logoChurn, borderColor: C.yellow, backgroundColor: 'rgba(251,191,36,.10)', fill: false, tension: .35, pointRadius: 0 },
-        { label: 'Revenue churn', data: revChurn,  borderColor: C.red,    backgroundColor: 'rgba(248,113,113,.10)', fill: false, tension: .35, pointRadius: 0 }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: C.light, font: { family: C.font }, boxWidth: 12 } }, tooltip },
-      scales: {
-        x: { grid: { color: C.grid }, ticks: { color: C.slate, font: { size: 10 } } },
-        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => v + '%' }, suggestedMin: 0, suggestedMax: 2 }
+        x:  { grid: { color: C.grid }, ticks: { color: C.slate, font: { size: 11 } } },
+        y:  { position: 'left',  grid: { color: C.grid }, ticks: { color: C.red, callback: v => v + '%' }, title: { display: true, text: 'Churn', color: C.red, font: { size: 10 } }, suggestedMin: 0, suggestedMax: 2 },
+        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: C.green, callback: v => v + '%' }, title: { display: true, text: 'Conversion', color: C.green, font: { size: 10 } }, suggestedMin: 0, suggestedMax: 15 }
       }
     }
   });

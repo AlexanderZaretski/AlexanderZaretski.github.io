@@ -206,19 +206,19 @@
             </span>
             <span class="card-flag card-flag-alt">SaaS analytics</span>
           </div>
-          <h3 class="card-title">SaaS Revenue &amp; Retention Analysis</h3>
-          <p class="card-summary">A full revenue model for a B2B SaaS - ARR, NRR, churn and funnel conversion, all reconciled.</p>
+          <h3 class="card-title">SaaS Revenue Analysis</h3>
+          <p class="card-summary">A clean read on the core SaaS metrics for a B2B SaaS - ARR, MRR, churn and conversion.</p>
           <dl class="case-rows">
             <div class="case-row">
-              <dt>Problem</dt>
-              <dd>SaaS metrics like ARR, NRR and churn get quoted everywhere, but are often calculated loosely and don't tie together.</dd>
+              <dt>What it shows</dt>
+              <dd>MRR growth, monthly churn and trial-to-paid conversion in two clear charts, with the headline numbers on top.</dd>
             </div>
             <div class="case-row">
-              <dt>What I built</dt>
-              <dd>A model that derives every metric from one set of MRR movements, so ARR, retention, churn and conversion all reconcile.</dd>
+              <dt>Why it matters</dt>
+              <dd>These are the numbers every SaaS team lives by - calculated correctly and easy to read at a glance.</dd>
             </div>
           </dl>
-          <p class="case-result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A clear read on revenue health: 107% net retention with efficient, retention-led growth.</p>
+          <p class="case-result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>$24M ARR, growing 35% with healthy churn and rising conversion.</p>
           <p class="card-stack">SQL &middot; Python &middot; Excel</p>
           <button class="btn-demo" data-modal="modal-market">Open interactive demo<span class="arr">&#x2192;</span></button>
         </article>
@@ -839,78 +839,28 @@ Action: cut hedge &amp; review config before 9:30 ET.</pre>
       <div class="db-header">
         <div>
           <span class="db-badge">B2B SaaS &middot; Revenue analytics</span>
-          <h2 class="db-title">SaaS Revenue &amp; Retention Analysis</h2>
-          <p class="db-sub">ARR, NRR, churn and conversion for a ~$24M-ARR B2B SaaS</p>
-          <p class="db-note">Interactive demo with synthetic data - every metric reconciles to the ARR bridge.</p>
+          <h2 class="db-title">SaaS Revenue Analysis</h2>
+          <p class="db-sub">ARR, MRR, churn and conversion for a B2B SaaS</p>
+          <p class="db-note">Interactive demo with synthetic data.</p>
         </div>
         <button class="db-close" data-close="modal-market">&#x2715;</button>
       </div>
-      <div class="db-kpis db-kpis-5">
+      <div class="db-kpis">
         <div class="db-kpi"><div class="kpi-num pos">$24.0M</div><div class="kpi-lab">ARR &middot; +35% YoY</div></div>
-        <div class="db-kpi"><div class="kpi-num pos">107%</div><div class="kpi-lab">Net revenue retention</div></div>
-        <div class="db-kpi"><div class="kpi-num">88%</div><div class="kpi-lab">Gross revenue retention</div></div>
-        <div class="db-kpi"><div class="kpi-num warn">1.1%</div><div class="kpi-lab">Logo churn / mo</div></div>
+        <div class="db-kpi"><div class="kpi-num">$2.0M</div><div class="kpi-lab">MRR</div></div>
+        <div class="db-kpi"><div class="kpi-num warn">1.1%</div><div class="kpi-lab">Monthly churn</div></div>
         <div class="db-kpi"><div class="kpi-num pos">12%</div><div class="kpi-lab">Trial &rarr; paid</div></div>
       </div>
       <div class="db-grid">
         <div class="db-box span-2">
-          <p class="db-box-title">ARR movement bridge &middot; last 12 months ($M)</p>
-          <p class="db-formula">Ending ARR = Start + New + Expansion &minus; Contraction &minus; Churn</p>
-          <canvas id="ch-saas-bridge"></canvas>
-        </div>
-        <div class="db-box">
-          <p class="db-box-title">Cohort revenue retention &middot; gross vs net</p>
-          <p class="db-formula">NRR = (Start + Expansion &minus; Contraction &minus; Churn) &divide; Start</p>
-          <canvas id="ch-saas-retention"></canvas>
-        </div>
-        <div class="db-box">
-          <p class="db-box-title">Monthly churn &middot; logo vs revenue</p>
-          <p class="db-formula">Logo churn = customers lost &divide; customers at start</p>
-          <canvas id="ch-saas-churn"></canvas>
+          <p class="db-box-title">MRR growth &middot; last 12 months</p>
+          <p class="db-formula">ARR = MRR &times; 12 &middot; +35% year over year</p>
+          <canvas id="ch-saas-mrr"></canvas>
         </div>
         <div class="db-box span-2">
-          <p class="db-box-title">Acquisition funnel &middot; monthly</p>
-          <p class="db-formula">Conversion = stage out &divide; stage in</p>
-          <div class="funnel">
-            <div class="funnel-row"><div class="funnel-bar" style="width:100%"><span class="fn-label">Website visitors</span><span class="fn-val">9,000</span></div></div>
-            <div class="funnel-conv">&darr; 8.0% &nbsp;visitor &rarr; trial</div>
-            <div class="funnel-row"><div class="funnel-bar" style="width:70%"><span class="fn-label">Free trials started</span><span class="fn-val">720</span></div></div>
-            <div class="funnel-conv">&darr; 50.0% &nbsp;trial &rarr; activated</div>
-            <div class="funnel-row"><div class="funnel-bar" style="width:48%"><span class="fn-label">Activated (product-qualified)</span><span class="fn-val">360</span></div></div>
-            <div class="funnel-conv">&darr; 23.9% &nbsp;activated &rarr; paid</div>
-            <div class="funnel-row"><div class="funnel-bar" style="width:28%"><span class="fn-label">New paying customers</span><span class="fn-val">86</span></div></div>
-          </div>
-        </div>
-        <div class="db-box span-2">
-          <p class="db-box-title">Revenue by plan tier</p>
-          <p class="db-formula">ARPA = ARR &divide; customers</p>
-          <div style="flex:1;overflow-y:auto;">
-            <table class="recon-table">
-              <thead>
-                <tr><th>Plan</th><th>Customers</th><th>ARR</th><th>ARPA</th><th>NRR</th><th>Logo churn /mo</th></tr>
-              </thead>
-              <tbody>
-                <tr><td class="hl">Starter</td><td>2,600</td><td>$4.7M</td><td>$1,800</td><td>96%</td><td>1.3%</td></tr>
-                <tr><td class="hl">Pro</td><td>1,150</td><td>$9.2M</td><td>$8,000</td><td class="pos">107%</td><td>0.8%</td></tr>
-                <tr><td class="hl">Enterprise</td><td>250</td><td>$10.1M</td><td>$40,400</td><td class="pos">112%</td><td>0.3%</td></tr>
-                <tr><td class="hl">Blended</td><td>4,000</td><td>$24.0M</td><td>$6,000</td><td class="pos">107%</td><td>1.1%</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-      <div class="db-case">
-        <div class="db-case-col">
-          <h4>Problem</h4>
-          <p>SaaS is judged on a handful of numbers - ARR, NRR, churn, conversion - but they only mean something if they're calculated correctly and tie back to the same revenue.</p>
-        </div>
-        <div class="db-case-col">
-          <h4>What I built</h4>
-          <p>A revenue model that derives every metric from one set of MRR movements. ARR, retention, churn and the funnel all reconcile to the ARR bridge.</p>
-        </div>
-        <div class="db-case-col">
-          <h4>Read</h4>
-          <p>Net retention of 107% means expansion outpaces churn - the base grows on its own. Growth is retention-led, with churn concentrated in the smallest plan.</p>
+          <p class="db-box-title">Churn &amp; conversion rate &middot; monthly</p>
+          <p class="db-formula">Churn = customers lost &divide; start &nbsp;&middot;&nbsp; Conversion = new paid &divide; trials</p>
+          <canvas id="ch-saas-cc"></canvas>
         </div>
       </div>
     </div>
