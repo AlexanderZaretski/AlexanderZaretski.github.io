@@ -36,6 +36,54 @@ function mk(id, config) {
   registry[id] = new Chart(ctx, config);
 }
 
+// prefers-reduced-motion (named distinctly to avoid clashing with main.js global)
+const reduceMotionDB = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ── Count-up numbers ─────────────────────────────────────────────────────────────
+// Parse a metric while preserving its formatting: currency ($), percent (%),
+// thousands commas, M/K suffix, and leading +/− sign. Non-numeric labels
+// (e.g. "9:12am", "Crypto", "FOMC") return null and are left untouched.
+function parseMetric(text) {
+  const m = text.trim().match(/^([$+\-−]?)\s*(\d[\d,]*(?:\.\d+)?)\s*([%MK]?)$/);
+  if (!m) return null;
+  const numStr = m[2];
+  return {
+    prefix:   m[1],
+    suffix:   m[3],
+    value:    parseFloat(numStr.replace(/,/g, '')),
+    decimals: numStr.includes('.') ? numStr.split('.')[1].length : 0,
+    hasComma: numStr.includes(',')
+  };
+}
+function formatMetric(v, info) {
+  let s = v.toFixed(info.decimals);
+  if (info.hasComma) {
+    const parts = s.split('.');
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    s = parts.join('.');
+  }
+  return info.prefix + s + info.suffix;
+}
+function countUpKpis(modal) {
+  modal.querySelectorAll('.kpi-num').forEach(el => {
+    if (!el.dataset.countTarget) el.dataset.countTarget = el.textContent.trim();
+    const target = el.dataset.countTarget;
+    const info = parseMetric(target);
+    if (!info || reduceMotionDB) { el.textContent = target; return; }
+
+    const DURATION = 1100;
+    const start = performance.now();
+    el.textContent = formatMetric(0, info);
+    (function step(now) {
+      const p = Math.min((now - start) / DURATION, 1);
+      const eased = 1 - Math.pow(1 - p, 3);     // easeOutCubic
+      el.textContent = formatMetric(info.value * eased, info);
+      if (p < 1) requestAnimationFrame(step);
+      else el.textContent = target;             // exact original formatting at the end
+    })(performance.now());
+  });
+}
+
 // ── Modal system ───────────────────────────────────────────────────────────────
 document.querySelectorAll('[data-modal]').forEach(btn =>
   btn.addEventListener('click', () => open(btn.dataset.modal))
@@ -53,8 +101,18 @@ function open(id) {
   if (!m) return;
   m.classList.add('open');
   document.body.style.overflow = 'hidden';
-  // Render charts after modal is visible so canvas has dimensions
-  requestAnimationFrame(() => render(id));
+
+  // Animate the KPI numbers up as the modal appears
+  countUpKpis(m);
+
+  // Loading state: shimmer over chart boxes, then draw the charts
+  const chartBoxes = [...m.querySelectorAll('.db-box')].filter(b => b.querySelector('canvas'));
+  chartBoxes.forEach(b => b.classList.add('is-loading'));
+  const delay = (reduceMotionDB || chartBoxes.length === 0) ? 0 : 320;
+  setTimeout(() => {
+    render(id);   // canvas has real dimensions now that the panel is laid out
+    requestAnimationFrame(() => chartBoxes.forEach(b => b.classList.remove('is-loading')));
+  }, delay);
 }
 function close(id) {
   const m = document.getElementById(id);
