@@ -198,28 +198,28 @@
           <button class="btn-demo" data-modal="modal-ai">Try the AI demo<span class="arr">&#x2192;</span></button>
         </article>
 
-        <!-- DEMO 5: Market Open Briefing -->
+        <!-- DEMO 5: SaaS Revenue & Retention Analysis -->
         <article class="card">
           <div class="card-top">
             <span class="card-tile">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="2" x2="12" y2="9"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/><line x1="23" y1="22" x2="1" y2="22"/><polyline points="8 6 12 2 16 6"/></svg>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
             </span>
-            <span class="card-flag card-flag-alt">Public data</span>
+            <span class="card-flag card-flag-alt">SaaS analytics</span>
           </div>
-          <h3 class="card-title">Market Open Briefing</h3>
-          <p class="card-summary">Pre-open dashboard covering futures, movers, and sector rotation in one screen.</p>
+          <h3 class="card-title">SaaS Revenue &amp; Retention Analysis</h3>
+          <p class="card-summary">A full revenue model for a B2B SaaS - ARR, NRR, churn and funnel conversion, all reconciled.</p>
           <dl class="case-rows">
             <div class="case-row">
               <dt>Problem</dt>
-              <dd>Trading teams need a fast picture of the market before the open, not five different browser tabs.</dd>
+              <dd>SaaS metrics like ARR, NRR and churn get quoted everywhere, but are often calculated loosely and don't tie together.</dd>
             </div>
             <div class="case-row">
               <dt>What I built</dt>
-              <dd>A daily dashboard from free public APIs - modeled on the pre-market dashboard I owned at eToro.</dd>
+              <dd>A model that derives every metric from one set of MRR movements, so ARR, retention, churn and conversion all reconcile.</dd>
             </div>
           </dl>
-          <p class="case-result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>One screen with everything that matters before 9:30am.</p>
-          <p class="card-stack">Python &middot; Yahoo Finance API &middot; FRED API</p>
+          <p class="case-result"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>A clear read on revenue health: 107% net retention with efficient, retention-led growth.</p>
+          <p class="card-stack">SQL &middot; Python &middot; Excel</p>
           <button class="btn-demo" data-modal="modal-market">Open interactive demo<span class="arr">&#x2192;</span></button>
         </article>
 
@@ -838,31 +838,79 @@ Action: cut hedge &amp; review config before 9:30 ET.</pre>
     <div class="db-panel">
       <div class="db-header">
         <div>
-          <span class="db-badge">Daily automation</span>
-          <h2 class="db-title">Market Open Briefing</h2>
-          <p class="db-sub">S&amp;P 500 futures, pre-market movers, and sector rotation - before 9:30am</p>
-          <p class="db-note">Interactive demo with sample data based on public sources.</p>
+          <span class="db-badge">B2B SaaS &middot; Revenue analytics</span>
+          <h2 class="db-title">SaaS Revenue &amp; Retention Analysis</h2>
+          <p class="db-sub">ARR, NRR, churn and conversion for a ~$24M-ARR B2B SaaS</p>
+          <p class="db-note">Interactive demo with synthetic data - every metric reconciles to the ARR bridge.</p>
         </div>
         <button class="db-close" data-close="modal-market">&#x2715;</button>
       </div>
-      <div class="db-kpis">
-        <div class="db-kpi"><div class="kpi-num pos">5,847</div><div class="kpi-lab">S&amp;P 500 futures</div></div>
-        <div class="db-kpi"><div class="kpi-num pos">+0.30%</div><div class="kpi-lab">vs fair value</div></div>
-        <div class="db-kpi"><div class="kpi-num warn">18.4</div><div class="kpi-lab">VIX</div></div>
-        <div class="db-kpi"><div class="kpi-num">FOMC</div><div class="kpi-lab">Key event today</div></div>
+      <div class="db-kpis db-kpis-5">
+        <div class="db-kpi"><div class="kpi-num pos">$24.0M</div><div class="kpi-lab">ARR &middot; +35% YoY</div></div>
+        <div class="db-kpi"><div class="kpi-num pos">107%</div><div class="kpi-lab">Net revenue retention</div></div>
+        <div class="db-kpi"><div class="kpi-num">88%</div><div class="kpi-lab">Gross revenue retention</div></div>
+        <div class="db-kpi"><div class="kpi-num warn">1.1%</div><div class="kpi-lab">Logo churn / mo</div></div>
+        <div class="db-kpi"><div class="kpi-num pos">12%</div><div class="kpi-lab">Trial &rarr; paid</div></div>
       </div>
       <div class="db-grid">
         <div class="db-box span-2">
-          <p class="db-box-title">Overnight futures vs fair value</p>
-          <canvas id="ch-market-futures"></canvas>
+          <p class="db-box-title">ARR movement bridge &middot; last 12 months ($M)</p>
+          <p class="db-formula">Ending ARR = Start + New + Expansion &minus; Contraction &minus; Churn</p>
+          <canvas id="ch-saas-bridge"></canvas>
         </div>
         <div class="db-box">
-          <p class="db-box-title">Pre-market top movers</p>
-          <canvas id="ch-market-movers"></canvas>
+          <p class="db-box-title">Cohort revenue retention &middot; gross vs net</p>
+          <p class="db-formula">NRR = (Start + Expansion &minus; Contraction &minus; Churn) &divide; Start</p>
+          <canvas id="ch-saas-retention"></canvas>
         </div>
         <div class="db-box">
-          <p class="db-box-title">Sector performance</p>
-          <canvas id="ch-market-sectors"></canvas>
+          <p class="db-box-title">Monthly churn &middot; logo vs revenue</p>
+          <p class="db-formula">Logo churn = customers lost &divide; customers at start</p>
+          <canvas id="ch-saas-churn"></canvas>
+        </div>
+        <div class="db-box span-2">
+          <p class="db-box-title">Acquisition funnel &middot; monthly</p>
+          <p class="db-formula">Conversion = stage out &divide; stage in</p>
+          <div class="funnel">
+            <div class="funnel-row"><div class="funnel-bar" style="width:100%"><span class="fn-label">Website visitors</span><span class="fn-val">9,000</span></div></div>
+            <div class="funnel-conv">&darr; 8.0% &nbsp;visitor &rarr; trial</div>
+            <div class="funnel-row"><div class="funnel-bar" style="width:70%"><span class="fn-label">Free trials started</span><span class="fn-val">720</span></div></div>
+            <div class="funnel-conv">&darr; 50.0% &nbsp;trial &rarr; activated</div>
+            <div class="funnel-row"><div class="funnel-bar" style="width:48%"><span class="fn-label">Activated (product-qualified)</span><span class="fn-val">360</span></div></div>
+            <div class="funnel-conv">&darr; 23.9% &nbsp;activated &rarr; paid</div>
+            <div class="funnel-row"><div class="funnel-bar" style="width:28%"><span class="fn-label">New paying customers</span><span class="fn-val">86</span></div></div>
+          </div>
+        </div>
+        <div class="db-box span-2">
+          <p class="db-box-title">Revenue by plan tier</p>
+          <p class="db-formula">ARPA = ARR &divide; customers</p>
+          <div style="flex:1;overflow-y:auto;">
+            <table class="recon-table">
+              <thead>
+                <tr><th>Plan</th><th>Customers</th><th>ARR</th><th>ARPA</th><th>NRR</th><th>Logo churn /mo</th></tr>
+              </thead>
+              <tbody>
+                <tr><td class="hl">Starter</td><td>2,600</td><td>$4.7M</td><td>$1,800</td><td>96%</td><td>1.3%</td></tr>
+                <tr><td class="hl">Pro</td><td>1,150</td><td>$9.2M</td><td>$8,000</td><td class="pos">107%</td><td>0.8%</td></tr>
+                <tr><td class="hl">Enterprise</td><td>250</td><td>$10.1M</td><td>$40,400</td><td class="pos">112%</td><td>0.3%</td></tr>
+                <tr><td class="hl">Blended</td><td>4,000</td><td>$24.0M</td><td>$6,000</td><td class="pos">107%</td><td>1.1%</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="db-case">
+        <div class="db-case-col">
+          <h4>Problem</h4>
+          <p>SaaS is judged on a handful of numbers - ARR, NRR, churn, conversion - but they only mean something if they're calculated correctly and tie back to the same revenue.</p>
+        </div>
+        <div class="db-case-col">
+          <h4>What I built</h4>
+          <p>A revenue model that derives every metric from one set of MRR movements. ARR, retention, churn and the funnel all reconcile to the ARR bridge.</p>
+        </div>
+        <div class="db-case-col">
+          <h4>Read</h4>
+          <p>Net retention of 107% means expansion outpaces churn - the base grows on its own. Growth is retention-led, with churn concentrated in the smallest plan.</p>
         </div>
       </div>
     </div>

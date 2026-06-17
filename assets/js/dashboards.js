@@ -474,87 +474,74 @@ function renderTrader() {
 
 // ── Dashboard 2: Market Briefing ───────────────────────────────────────────────
 function renderMarket() {
-  // Line: futures vs fair value
-  const times   = ['12am','1am','2am','3am','4am','5am','6am','7am','8am','8:30','9am','9:30am'];
-  const futures  = [5820, 5815, 5812, 5808, 5811, 5819, 5828, 5835, 5841, 5845, 5843, 5847];
-  const fairVal  = Array(12).fill(5830);
-  mk('ch-market-futures', {
-    type: 'line',
-    data: {
-      labels: times,
-      datasets: [
-        {
-          label: 'S&P 500 Futures',
-          data: futures,
-          borderColor: C.accent,
-          backgroundColor: 'rgba(139,124,240,.10)',
-          fill: true, tension: 0.4,
-          pointRadius: 3, pointBackgroundColor: C.accent
-        },
-        {
-          label: 'Fair Value',
-          data: fairVal,
-          borderColor: C.yellow,
-          borderDash: [6, 4],
-          borderWidth: 1.5,
-          pointRadius: 0, fill: false, tension: 0
-        }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { labels: { color: C.light, font: { family: C.font } } }, tooltip },
-      scales: axes()
-    }
-  });
-
-  // Horizontal bar: top movers (gainers green, losers red)
-  const tickers = ['NVDA +4.2%', 'META +3.1%', 'AMZN +2.8%', 'BA -2.4%', 'DIS -1.7%', 'CVS -1.3%'];
-  const changes = [4.2, 3.1, 2.8, -2.4, -1.7, -1.3];
-  mk('ch-market-movers', {
+  // ── SaaS Revenue & Retention Analysis ──
+  // ARR movement bridge ($M), drawn as floating ("waterfall") bars:
+  // Start 17.8 + New 5.0 + Expansion 3.4 − Contraction 0.9 − Churn 1.3 = End 24.0
+  const bridgeLabels = ['Start', 'New', 'Expansion', 'Contraction', 'Churn', 'End'];
+  const bridgeData   = [[0, 17.8], [17.8, 22.8], [22.8, 26.2], [25.3, 26.2], [24.0, 25.3], [0, 24.0]];
+  const bridgeDeltas = ['$17.8M', '+$5.0M', '+$3.4M', '−$0.9M', '−$1.3M', '$24.0M'];
+  const bridgeColors = [
+    'rgba(139,124,240,.85)', 'rgba(52,211,153,.8)', 'rgba(52,211,153,.8)',
+    'rgba(248,113,113,.8)', 'rgba(248,113,113,.8)', 'rgba(139,124,240,.85)'
+  ];
+  mk('ch-saas-bridge', {
     type: 'bar',
-    data: {
-      labels: tickers,
-      datasets: [{
-        label: 'Pre-market Change %',
-        data: changes,
-        backgroundColor: changes.map(v => v >= 0 ? 'rgba(52,211,153,.75)' : 'rgba(248,113,113,.75)'),
-        borderRadius: 5,
-        borderSkipped: false
-      }]
-    },
+    data: { labels: bridgeLabels, datasets: [{ data: bridgeData, backgroundColor: bridgeColors, borderRadius: 3, borderSkipped: false }] },
     options: {
       responsive: true, maintainAspectRatio: false,
-      indexAxis: 'y',
-      plugins: { legend: { display: false }, tooltip },
+      plugins: {
+        legend: { display: false },
+        tooltip: Object.assign({}, tooltip, { callbacks: { label: c => bridgeDeltas[c.dataIndex] } })
+      },
       scales: {
-        x: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => v + '%' } },
-        y: { grid: { color: C.grid }, ticks: { color: C.light, font: { family: C.font, size: 11 } } }
+        x: { grid: { color: C.grid }, ticks: { color: C.light, font: { family: C.font, size: 11 } } },
+        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => '$' + v + 'M' }, beginAtZero: true }
       }
     }
   });
 
-  // Bar: sector performance
-  const sectors = ['Tech', 'Energy', 'Fins', 'Consumer', 'Health', 'Utilities', 'RE'];
-  const sPerf   = [1.2, 0.8, 0.3, -0.2, -0.4, -0.6, -0.9];
-  mk('ch-market-sectors', {
-    type: 'bar',
+  // Cohort revenue retention — gross (losses only) vs net (with expansion), by month.
+  const rMonths = ['0', '2', '4', '6', '8', '10', '12'];
+  const net   = [100, 101, 102.5, 104, 105, 106, 107];
+  const gross = [100, 97.5, 95, 93, 91, 89.5, 88];
+  mk('ch-saas-retention', {
+    type: 'line',
     data: {
-      labels: sectors,
-      datasets: [{
-        label: '% Change',
-        data: sPerf,
-        backgroundColor: sPerf.map(v => v >= 0 ? 'rgba(52,211,153,.7)' : 'rgba(248,113,113,.7)'),
-        borderRadius: 5,
-        borderSkipped: false
-      }]
+      labels: rMonths,
+      datasets: [
+        { label: 'Net (NRR)',  data: net,   borderColor: C.green,  backgroundColor: 'rgba(52,211,153,.10)', fill: true,  tension: .35, pointRadius: 2 },
+        { label: 'Gross (GRR)', data: gross, borderColor: C.accent, backgroundColor: 'rgba(139,124,240,.06)', fill: false, tension: .35, pointRadius: 2 }
+      ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip },
+      plugins: { legend: { labels: { color: C.light, font: { family: C.font }, boxWidth: 12 } }, tooltip },
       scales: {
-        x: { grid: { color: C.grid }, ticks: { color: C.slate } },
+        x: { grid: { color: C.grid }, ticks: { color: C.slate }, title: { display: true, text: 'Months since cohort start', color: C.slate, font: { size: 10 } } },
         y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => v + '%' } }
+      }
+    }
+  });
+
+  // Monthly churn — logo (customer) vs revenue (dollar) churn %.
+  const cMonths    = ['Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+  const logoChurn  = [1.2, 1.0, 1.1, 1.3, 0.9, 1.1, 1.2, 1.0, 1.1, 1.2, 1.0, 1.1];
+  const revChurn   = [1.0, 0.8, 0.9, 1.1, 0.7, 0.9, 1.0, 0.8, 0.9, 1.0, 0.8, 0.9];
+  mk('ch-saas-churn', {
+    type: 'line',
+    data: {
+      labels: cMonths,
+      datasets: [
+        { label: 'Logo churn',    data: logoChurn, borderColor: C.yellow, backgroundColor: 'rgba(251,191,36,.10)', fill: false, tension: .35, pointRadius: 0 },
+        { label: 'Revenue churn', data: revChurn,  borderColor: C.red,    backgroundColor: 'rgba(248,113,113,.10)', fill: false, tension: .35, pointRadius: 0 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { labels: { color: C.light, font: { family: C.font }, boxWidth: 12 } }, tooltip },
+      scales: {
+        x: { grid: { color: C.grid }, ticks: { color: C.slate, font: { size: 10 } } },
+        y: { grid: { color: C.grid }, ticks: { color: C.slate, callback: v => v + '%' }, suggestedMin: 0, suggestedMax: 2 }
       }
     }
   });
