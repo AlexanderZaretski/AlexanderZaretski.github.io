@@ -134,10 +134,12 @@ function render(id) {
 // ── Flagship 1: Pre-Market Order Monitoring ────────────────────────────────────
 function renderSLTP() {
   // Hedge-book P&L by stock at open ($K), sorted most-negative first.
+  // Clients are net long: down + under-hedged = company profit, down + over-hedged = loss,
+  // up + under-hedged = loss, up + over-hedged = profit.
   const hedge = [
-    ['GME', -520], ['TSLA', -485], ['BA', -420], ['META', -360], ['NVDA', -310],
-    ['COIN', -240], ['PLTR', -205], ['MRNA', -190], ['AMD', -140], ['XOM', -95],
-    ['AAPL', -25], ['DIS', -15], ['JPM', -10], ['NFLX', 35], ['INTC', 85]
+    ['GME', -640], ['TSLA', -560], ['MRNA', -320], ['COIN', -280], ['INTC', -190],
+    ['NFLX', -140], ['AAPL', -15], ['JPM', 10], ['XOM', 80], ['DIS', 90],
+    ['AMD', 140], ['PLTR', 180], ['NVDA', 260], ['META', 300], ['BA', 360]
   ];
   mk('ch-sltp-hedge', {
     type: 'bar',

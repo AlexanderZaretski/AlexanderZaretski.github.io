@@ -850,6 +850,10 @@ a:focus-visible, button:focus-visible {
 .recon-table td.neg { color: var(--red); }
 .recon-table tr.mismatch td { background: rgba(248,113,113,.08); color: var(--red); font-weight: 600; }
 .recon-table td.amb { color: var(--amber); }
+/* In the pre-market hedge table a flagged row = company loss, but the client P&L
+   cell keeps its own sign colour (a client profit should stay green, not red). */
+.recon-table.hedge-table tr.mismatch td.pos { color: var(--green); }
+.recon-table.hedge-table tr.mismatch td.neg { color: var(--red); }
 
 /* ── Pre-market modal: AI brief + Google Chat alert preview ─────────────────── */
 .ai-brief {
